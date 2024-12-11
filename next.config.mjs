@@ -7,7 +7,9 @@ const nextConfig = {
                 hostname: 'bytegrad.com'
             }
         ]
-    }
+    },
+    output: 'standalone'
+    
 };
 
 export default nextConfig;
