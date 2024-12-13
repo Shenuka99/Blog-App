@@ -1,60 +1,59 @@
-'use client';
+"use client";
 
-import { logout } from '@/app/actions/actions';
-import {  sessionResults } from '@/lib/auth';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';  // Import useRouter
-import { useEffect, useState } from 'react';
+import { logout } from "@/app/actions/actions";
+import { sessionResults } from "@/lib/auth";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation"; // Import useRouter
+import { useEffect, useState } from "react";
 
 const navLinks = [
   {
-    href: '/',
-    label: 'Home',
+    href: "/",
+    label: "Home",
   },
   {
-    href: '/posts',
-    label: 'My Posts',
+    href: "/posts",
+    label: "My Posts",
   },
   {
-    href: '/create-post',
-    label: 'Create post',
+    href: "/create-post",
+    label: "Create post",
   },
 ];
 
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();  
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const  isLoggedIn = window.localStorage.getItem('loggedIn')
 
   const checkSession = async () => {
     try {
-      const session = await sessionResults(); 
+      const session = await sessionResults();
       if (session?.isAuth) {
-        setIsLoggedIn(true); 
+        setIsLoggedIn(true);
       } else {
-        setIsLoggedIn(false)
+        setIsLoggedIn(false);
       }
     } catch (error) {
-      console.error('Error verifying session:', error);
-      setIsLoggedIn(false); 
+      console.error("Error verifying session:", error);
+      setIsLoggedIn(false);
     }
   };
 
   useEffect(() => {
-    if (pathname != '/login' &&  pathname != '/signin'){
-      checkSession(); 
+    if (pathname != "/login" && pathname != "/signup") {
+      checkSession();
     }
-
   }, [pathname]);
 
   const handleLogout = async () => {
     await logout();
     // localStorage.clear()
-    setIsLoggedIn(false); 
-    
-    router.push('/login'); 
+    setIsLoggedIn(false);
+
+    router.push("/login");
   };
 
   return (
@@ -76,7 +75,9 @@ export default function Header() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className={`${pathname === link.href ? 'text-zinc-900' : 'text-zinc-400'}`}
+                  className={`${
+                    pathname === link.href ? "text-zinc-900" : "text-zinc-400"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -88,14 +89,14 @@ export default function Header() {
 
       {isLoggedIn ? (
         <button
-        onClick={handleLogout}
+          onClick={handleLogout}
           className="p-1 px-2 bg-white rounded-md text-black mx-2 text-sm border-black border-2 hover:bg-black hover:text-white"
         >
           Logout
         </button>
       ) : (
         <div>
-          {pathname === '/signin' && (
+          {pathname === "/signup" && (
             <Link href="/login">
               <button className="p-1 px-2 bg-white rounded-md text-black mx-2 text-sm border-black border-2 hover:bg-black hover:text-white">
                 Login
@@ -103,8 +104,8 @@ export default function Header() {
             </Link>
           )}
 
-          {pathname === '/login' && (
-            <Link href="/signin">
+          {pathname === "/login" && (
+            <Link href="/signup">
               <button className="p-1 px-2 bg-white rounded-md text-black text-sm border-black border-2 hover:bg-black hover:text-white">
                 Sign In
               </button>

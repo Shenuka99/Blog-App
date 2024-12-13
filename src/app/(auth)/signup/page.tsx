@@ -1,15 +1,15 @@
 "use client";
 
-import { handleRegister } from "@/app/actions/actions";
+import { signup } from "@/app/actions/actions";
 import { useActionState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 
-export default function Signin() {
-  const [state, action] = useActionState(handleRegister, undefined);
+export default function Signup() {
+  const [state, action, pending] = useActionState(signup, undefined);
 
   return (
-    <main className="text-center pt-16">
-      <h1 className="text-4xl md:text-5xl font-bold mb-5">Sign In</h1>
+    <main className="text-center pt-6">
+      <h1 className="text-4xl md:text-5xl font-bold mb-5">Signup</h1>
       <form
         action={action}
         className="flex flex-col max-w-[400px] mx-auto gap-2"
@@ -24,7 +24,6 @@ export default function Signin() {
         {state?.errors?.firstName && (
           <p className="text-sm text-red-500">{state.errors.firstName}</p>
         )}
-
         <input
           type="text"
           name="lastName"
@@ -35,7 +34,6 @@ export default function Signin() {
         {state?.errors?.lastName && (
           <p className="text-sm text-red-500">{state.errors.lastName}</p>
         )}
-
         <input
           type="email"
           name="email"
@@ -46,7 +44,6 @@ export default function Signin() {
         {state?.errors?.email && (
           <p className="text-sm text-red-500">{state.errors.email}</p>
         )}
-
         <input
           type="password"
           name="password"
@@ -57,7 +54,6 @@ export default function Signin() {
         {state?.errors?.password && (
           <p className="text-sm text-red-500">{state.errors.password}</p>
         )}
-
         <input
           type="password"
           name="confirmPassword"
@@ -65,37 +61,29 @@ export default function Signin() {
           placeholder="Confirm Password"
           className="border rounded h-10 px-3"
         />
-
         {state?.errors?.confirmPassword && (
-          <p className="text-sm text-red-500 py-2">
-            {state.errors.confirmPassword}
-          </p>
+          <ul>
+            {state?.errors?.confirmPassword.map((error) => (
+              <li key={error} className="text-sm text-red-500  p-2">
+                {error}
+              </li>
+            ))}
+          </ul>
         )}
-
-        {state?.errors && (
+        {state?.errors?._form && (
           <p className="text-sm text-red-500  p-2">{state.errors._form}</p>
         )}
-
         {state?.message && (
           <p className="text-sm text-red-500  p-2">{state?.message}</p>
         )}
-        <SignupButton />
-        {/* <button aria-disabled={pending} className="h-10 bg-blue-500 px-5 rounded text-white" type="submit"> {pending ? 'Submitting...' : 'Login'}</button> */}
+        <button
+          aria-disabled={pending}
+          type="submit"
+          className="h-10 bg-blue-500 px-5 rounded text-white hover:bg-blue-600"
+        >
+          {pending ? "Submitting..." : "Signup"}
+        </button>
       </form>
     </main>
-  );
-}
-
-export function SignupButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      aria-disabled={pending}
-      type="submit"
-      className="h-10 bg-blue-500 px-5 rounded text-white"
-    >
-      {pending ? "Submitting..." : "Signin"}
-    </button>
   );
 }

@@ -1,14 +1,16 @@
-import { deletePost } from "@/app/actions/actions";
+import { deletePost } from "@/app/actions/dal";
+import { verifySession } from "@/app/actions/stateless-sessions";
 import UpvoteButton from "@/components/upvoteButton";
+import { sessionResults } from "@/lib/auth";
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 export const metadata = {
   title: "Post",
-}
+};
 
-export default async function Page(props: {params : Promise<{ id: string}>}) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   const post = await prisma.post.findUnique({
     where: {
@@ -21,30 +23,34 @@ export default async function Page(props: {params : Promise<{ id: string}>}) {
   }
 
   async function deleteAction(formData: FormData) {
-    'use server';
+    "use server";
     const res = await deletePost(params.id);
     // put a toast
-    redirect('/posts');
+    redirect("/posts");
   }
+
+  const session = await sessionResults();
 
   return (
     <main className="px-7 pt-24 text-center">
       <h1 className="text-5xl font-semibold mb-7">{post.title}</h1>
       <p className="max-w-[700px] mx-auto">{post.body}</p>
 
-      <div className="flex gap-4 justify-center mx-auto">
-        <Link href={`/edit-post/${params.id}`}>
-          <button className="my-8 p-2 bg-blue-400 rounded-xl">
-            Edit Post
-          </button>
-        </Link>
+      {session?.userId == post.userId && (
+        <div className="flex gap-4 justify-center mx-auto">
+          <Link href={`/edit-post/${params.id}`}>
+            <button className="my-8 p-2 bg-blue-400 rounded-xl">
+              Edit Post
+            </button>
+          </Link>
 
-        <form action={deleteAction}>
-          <button className="my-8 p-2 bg-red-500 rounded-xl">
-            Delete Post
-          </button>
-        </form>
-      </div>
+          <form action={deleteAction}>
+            <button className="my-8 p-2 bg-red-500 rounded-xl">
+              Delete Post
+            </button>
+          </form>
+        </div>
+      )}
     </main>
   );
 }
