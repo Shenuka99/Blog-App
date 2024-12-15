@@ -1,12 +1,14 @@
 import PostList from "@/components/post-list";
 import prisma from "@/lib/db";
 import { Suspense } from "react";
-import { sessionResults } from "@/lib/auth";
+import { verifySession } from "../actions/dal";
+
+export const metadata = {
+  title: "My Posts",
+};
 
 export default async function Page() {
-  // await new Promise((resolve) => setTimeout(resolve, 2000))
-  // this thing caches data as hell
-  const session = await sessionResults();
+  const session = await verifySession();
 
   const posts = await prisma.post.findMany({
     where: {
@@ -15,7 +17,7 @@ export default async function Page() {
   });
 
   return (
-    <main className="text-center pt-16 px-5">
+    <main className="text-center pt-2 px-5">
       <h1 className="text-4xl md:text-5xl font-bold mb-5">My Posts</h1>
 
       <Suspense fallback="Loading...">

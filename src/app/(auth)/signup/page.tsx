@@ -1,8 +1,8 @@
 "use client";
 
 import { signup } from "@/app/actions/actions";
+import SubmitButton from "@/components/submit-button";
 import { useActionState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
 
 export default function Signup() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -76,13 +76,8 @@ export default function Signup() {
         {state?.message && (
           <p className="text-sm text-red-500  p-2">{state?.message}</p>
         )}
-        <button
-          aria-disabled={pending}
-          type="submit"
-          className="h-10 bg-blue-500 px-5 rounded text-white hover:bg-blue-600"
-        >
-          {pending ? "Submitting..." : "Signup"}
-        </button>
+
+        <SubmitButton text="Signup" pending={pending} />
       </form>
     </main>
   );

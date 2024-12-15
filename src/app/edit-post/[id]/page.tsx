@@ -1,6 +1,10 @@
 import { fetchPostById, updatePost } from "@/app/actions/dal";
 import Form from "@/components/form";
 
+export const metadata = {
+  title: "Edit Post",
+};
+
 export default async function EditPost(props: {
   params: Promise<{ id: string }>;
 }) {
@@ -21,8 +25,6 @@ export default async function EditPost(props: {
           body: post?.body ? post?.body : "",
         }}
       />
-
-      {/* <LogoutLink>Log out</LogoutLink> */}
     </main>
   );
 }

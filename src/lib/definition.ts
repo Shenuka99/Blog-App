@@ -60,7 +60,7 @@ export type PostFormState =
   | {
       errors?: {
         title?: string[];
-        content?: string[];
+        body?: string[];
         _form?: string[];
       };
       message?: string;
@@ -71,4 +71,13 @@ export type PostFormState =
 export type SessionPayload = {
   userId: string | number;
   expiresAt: Date;
+};
+
+export type PostType = {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+  userId: number;
 };

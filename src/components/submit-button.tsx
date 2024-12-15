@@ -1,12 +1,18 @@
-// submit-button.tsx
-'use client';
+"use client";
 
-import { useFormStatus } from "react-dom";
+type SubmitButtonPrps = {
+  text: string;
+  pending: boolean;
+};
 
-
-export default function SubmitButton({text = 'Sign up'}) {
-  const { pending } = useFormStatus();
+export default function SubmitButton({ text, pending }: SubmitButtonPrps) {
   return (
-    <button className="h-10 bg-blue-500 px-5 rounded text-white" type="submit" disabled={pending}>{ pending ? 'Submitting...' : text}</button>
+    <button
+      aria-disabled={pending}
+      type="submit"
+      className="h-10 bg-blue-500 px-5 rounded text-white hover:bg-blue-600"
+    >
+      {pending ? "Submitting..." : text}
+    </button>
   );
 }

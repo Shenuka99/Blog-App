@@ -46,8 +46,6 @@ export async function createSession(id: number) {
 
   const sessionId = session.id;
 
-  console.log(sessionId);
-
   // 2. Encrypt the session ID
   const token = await encrypt({ userId: id, expiresAt });
 

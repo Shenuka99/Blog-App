@@ -1,7 +1,9 @@
 "use client";
 
+import { PostFormState } from "@/lib/definition";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import SubmitButton from "./submit-button";
 
 interface FormProps {
   formAction: any;
@@ -11,16 +13,11 @@ interface FormProps {
   };
 }
 
-interface FormErrors {
-  title?: string[];
-  body?: string[];
-}
-
-interface FormState {
-  errors: FormErrors;
-}
 const Form: React.FC<FormProps> = ({ formAction, postData }) => {
-  const [state, action, pending] = useActionState(formAction, undefined);
+  const [state, action, pending] = useActionState<PostFormState>(
+    formAction,
+    undefined
+  );
 
   return (
     <form
@@ -51,24 +48,9 @@ const Form: React.FC<FormProps> = ({ formAction, postData }) => {
         <p className="text-sm text-red-500">{state?.errors?.body}</p>
       )}
 
-      {/* <button className="h-10 bg-blue-500 px-5 rounded text-white" type="submit">Submit</button> */}
-      <SubmitButton />
+      <SubmitButton text="Submit" pending={pending} />
     </form>
   );
 };
 
 export default Form;
-
-export function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      aria-disabled={pending}
-      type="submit"
-      className="h-10 bg-blue-500 px-5 rounded text-white"
-    >
-      {pending ? "Submitting..." : "Submit"}
-    </button>
-  );
-}

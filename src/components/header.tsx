@@ -1,11 +1,10 @@
 "use client";
 
 import { logout } from "@/app/actions/actions";
-import { sessionResults } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation"; // Import useRouter
-import { useEffect, useState } from "react";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import BlogImg from "../../public/blogger.svg";
 
 const navLinks = [
   {
@@ -24,43 +23,17 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const  isLoggedIn = window.localStorage.getItem('loggedIn')
-
-  const checkSession = async () => {
-    try {
-      const session = await sessionResults();
-      if (session?.isAuth) {
-        setIsLoggedIn(true);
-      } else {
-        setIsLoggedIn(false);
-      }
-    } catch (error) {
-      console.error("Error verifying session:", error);
-      setIsLoggedIn(false);
-    }
-  };
-
-  useEffect(() => {
-    if (pathname != "/login" && pathname != "/signup") {
-      checkSession();
-    }
-  }, [pathname]);
 
   const handleLogout = async () => {
     await logout();
-    // localStorage.clear()
-    setIsLoggedIn(false);
-
-    router.push("/login");
+    redirect("/login");
   };
 
   return (
     <header className="flex justify-between items-center py-4 px-7 border-b">
       <Link href="/">
         <Image
-          src="https://bytegrad.com/course-assets/youtube/example-logo.png"
+          src={BlogImg}
           alt="Logo"
           className="w-[35px] h-[35px]"
           width="35"
@@ -68,7 +41,7 @@ export default function Header() {
         />
       </Link>
 
-      {isLoggedIn && (
+      {pathname !== "/signup" && pathname !== "/login" && (
         <nav>
           <ul className="flex gap-x-5 text-[14px]">
             {navLinks.map((link) => (
@@ -87,7 +60,7 @@ export default function Header() {
         </nav>
       )}
 
-      {isLoggedIn ? (
+      {pathname !== "/signup" && pathname !== "/login" ? (
         <button
           onClick={handleLogout}
           className="p-1 px-2 bg-white rounded-md text-black mx-2 text-sm border-black border-2 hover:bg-black hover:text-white"

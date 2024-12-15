@@ -12,7 +12,7 @@ export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("1hr")
+    .setExpirationTime("2 hours")
     .sign(encodedKey);
 }
 
@@ -41,17 +41,6 @@ export async function createSession(userId: string) {
   });
 
   redirect("/");
-}
-
-export async function verifySession() {
-  const cookie = await (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
-
-  if (!session?.userId) {
-    return { isAuth: false, userId: "" };
-  } else {
-    return { isAuth: true, userId: Number(session.userId) };
-  }
 }
 
 export async function updateSession() {

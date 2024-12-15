@@ -1,4 +1,4 @@
-import "use server";
+"use server";
 
 import { cookies } from "next/headers";
 import { decrypt } from "@/app/actions/stateless-sessions";
@@ -7,6 +7,7 @@ import { notFound, redirect } from "next/navigation";
 import { PostFormState, postSchema } from "@/lib/definition";
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { Post, User } from "@prisma/client";
 
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
@@ -66,7 +67,6 @@ export async function deletePost(postId: string) {
       },
     });
 
-    console.log(res);
     return { success: true };
   } catch (error) {
     //   console.error('Failed to delete post:', error);
@@ -124,7 +124,10 @@ export async function updatePost(
   redirect("/");
 }
 
-export async function fetchPosts(): Promise<Post[]> {
+export async function fetchAllPosts(): Promise<Post[] | null> {
+  const session = await verifySession();
+  if (!session) return null;
+
   return await prisma.post.findMany({
     orderBy: [
       {
@@ -135,6 +138,9 @@ export async function fetchPosts(): Promise<Post[]> {
 }
 
 export async function fetchPostById(id: string): Promise<Post | null> {
+  const session = await verifySession();
+  if (!session) return null;
+
   const post = await prisma.post.findFirst({
     where: {
       id: +id,
@@ -146,4 +152,21 @@ export async function fetchPostById(id: string): Promise<Post | null> {
   }
 
   return post;
+}
+
+export async function fetchUserById(userId: number): Promise<User | null> {
+  const session = await verifySession();
+  if (!session) return null;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: +userId,
+    },
+  });
+
+  if (!user) {
+    notFound();
+  }
+
+  return user;
 }

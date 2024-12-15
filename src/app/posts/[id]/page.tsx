@@ -1,13 +1,10 @@
-import { deletePost } from "@/app/actions/dal";
-import { verifySession } from "@/app/actions/stateless-sessions";
-import UpvoteButton from "@/components/upvoteButton";
-import { sessionResults } from "@/lib/auth";
+import { deletePost, verifySession } from "@/app/actions/dal";
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Post",
+  title: "Read Post",
 };
 
 export default async function Page(props: { params: Promise<{ id: string }> }) {
@@ -25,11 +22,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
   async function deleteAction(formData: FormData) {
     "use server";
     const res = await deletePost(params.id);
-    // put a toast
+
     redirect("/posts");
   }
 
-  const session = await sessionResults();
+  const session = await verifySession();
 
   return (
     <main className="px-7 pt-24 text-center">
@@ -39,13 +36,13 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       {session?.userId == post.userId && (
         <div className="flex gap-4 justify-center mx-auto">
           <Link href={`/edit-post/${params.id}`}>
-            <button className="my-8 p-2 bg-blue-400 rounded-xl">
+            <button className="my-8 py-2 px-4 bg-blue-400 rounded-xl hover:bg-blue-600">
               Edit Post
             </button>
           </Link>
 
           <form action={deleteAction}>
-            <button className="my-8 p-2 bg-red-500 rounded-xl">
+            <button className="my-8 py-2 px-4 bg-red-500 rounded-xl hover:bg-red-700">
               Delete Post
             </button>
           </form>

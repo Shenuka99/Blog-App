@@ -1,13 +1,10 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
-import { BookmarkIcon } from "@heroicons/react/outline";
+import { Post as TypePost } from "@prisma/client";
+import { fetchUserById } from "@/app/actions/dal";
 
-export default async function Post({ post }) {
-  const user = await prisma.user.findFirst({
-    where: {
-      id: +post.userId,
-    },
-  });
+export default async function Post({ post }: { post: TypePost }) {
+  const user = await fetchUserById(post.userId);
 
   return (
     <>
@@ -18,9 +15,6 @@ export default async function Post({ post }) {
           Author: {user?.firstName} {user?.lastName}
         </h2>
       </Link>
-      <button className="absolute top-4 right-4 bg-transparent text-gray-500 hover:text-gray-700">
-        {/* <BookmarkIcon className="h-5 w-5" /> */}
-      </button>
     </>
   );
 }

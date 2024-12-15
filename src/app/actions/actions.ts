@@ -2,22 +2,13 @@
 // this is not for creating server component , it is for server actions
 
 import prisma from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import type { Post, User } from "@prisma/client";
-
-import {
-  createSession,
-  deleteSession,
-  verifySession,
-} from "./stateless-sessions";
-import { notFound, redirect } from "next/navigation";
+import { createSession, deleteSession } from "./stateless-sessions";
+import { redirect } from "next/navigation";
 import { hashSync } from "bcrypt-ts";
-import { compare, compareSync } from "bcrypt-ts/browser";
+import { compare } from "bcrypt-ts/browser";
 import {
   LoginFormSchema,
   LoginFormState,
-  PostFormState,
-  postSchema,
   SignupFormSchema,
   SignupFormState,
 } from "../../lib/definition";
@@ -28,8 +19,6 @@ export async function signup(
 ): Promise<SignupFormState> {
   const data = Object.fromEntries(formData.entries());
   const validationFields = SignupFormSchema.safeParse(data);
-
-  console.log("validationFields", validationFields);
 
   if (!validationFields.success) {
     return {
@@ -63,18 +52,13 @@ export async function signup(
       },
     });
 
-    // console.log("result2", user);
+    console.log(user);
 
     if (!user) {
       return {
         message: "An error occurred while creating your account.",
       };
     }
-
-    // const userId = user.id.toString();
-    // await createSession(userId);
-
-    redirect("/login");
   } catch (error: unknown) {
     if (error instanceof Error) {
       return {
@@ -90,6 +74,8 @@ export async function signup(
       };
     }
   }
+
+  redirect("/login");
 }
 
 export async function login(
@@ -133,6 +119,5 @@ export async function login(
 }
 
 export async function logout() {
-  deleteSession();
-  redirect("/login");
+  await deleteSession();
 }
