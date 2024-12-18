@@ -170,3 +170,38 @@ export async function fetchUserById(userId: number): Promise<User | null> {
 
   return user;
 }
+
+export async function fetchUserDetails(): Promise<User | null> {
+  const session = await verifySession();
+  if (!session) return null;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: +session.userId
+    },
+  });
+
+  if (!user) {
+    notFound();
+  }
+
+  return user;
+}
+
+export async function UpdateUserDetails(): Promise<User | null> {
+  const session = await verifySession();
+  if (!session) return null;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: +session.userId
+    },
+  });
+
+  if (!user) {
+    notFound();
+  }
+
+  return user;
+}
+

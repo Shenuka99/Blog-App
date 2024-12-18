@@ -36,7 +36,7 @@ model Post {
   body      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int
+  userId    Int      @default(1)
   user      User     @relation(fields: [userId], references: [id])
 }
 
